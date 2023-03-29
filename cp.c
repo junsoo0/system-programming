@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <stdlib.h>
- 
+
 #define BUFFERSIZE 4096
 #define COPYMODE 0644
 
