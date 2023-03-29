@@ -13,8 +13,8 @@ void show_info(struct utmp* utbufp);
 void show_time(long timeval);
 
 int main() {
-	struct utmp *utbufp;		/* holds pointer to next rec */
-	struct utmp *utmp_next();	/* returns pointer to next */
+	struct utmp *utbufp;		/* hold pointer to next rec */
+	struct utmp *utmp_next();	/* return pointer to next */
 
 	/* open the UTMP file */
 	if(utmp_open(UTMP_FILE) == -1) {
@@ -31,8 +31,8 @@ int main() {
 }
 
 /*
-	displays contents of the utmp struct in human readable form
-	displays nothing if a record has no user name
+	display contents of the utmp struct in human readable form
+	display nothing if a record has no user name
 */
 void show_info(struct utmp* utbufp) {
 	if(utbufp->ut_type != USER_PROCESS)		/* users only */
@@ -50,8 +50,8 @@ void show_info(struct utmp* utbufp) {
 }
 
 /*
-	displays time in a format fit for human consumption
-	uses ctime to build a string then pick parts out of it
+	display time in a format fit for human consumption
+	use ctime to build a string then pick parts out of it
 	note: %12.12s prints a string with 12 chars wide and limits it to 12 chars
 */
 void show_time(long timeval) {
