@@ -127,7 +127,7 @@ void dostat(char *filename) {
 
 void show_file_info(char *filename, struct stat *info_p) {
 	/*
-	   displays the info about 'filename'
+	   display the info about 'filename'
 	   the info is stored in struct at info_p
 	*/
 	char *uid_to_name(), *ctime(), *gid_to_name(), *filemode();
@@ -164,7 +164,7 @@ void mode_to_letters(int mode, char str[]) {
 
 char *uid_to_name(uid_t uid) {
 	/*
-	   returns pointer to username associated with uid, uses getpwuid()
+	   return pointer to username associated with uid, uses getpwuid()
 	*/
 	struct passwd *getpwuid(), *pw_ptr;
 	static char numstr[10];
@@ -179,7 +179,7 @@ char *uid_to_name(uid_t uid) {
 
 char *gid_to_name(gid_t gid) {
 	/*
-	   returns pointer to group number gid, uses getgrgid()
+	   return pointer to group number gid, uses getgrgid()
 	*/
 	struct group *getgrgid(), *grp_ptr;
 	static char numstr[10];
