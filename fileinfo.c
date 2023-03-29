@@ -1,6 +1,6 @@
 /*
 	fileinfo.c
-		- use stat to obtain and print file properties
+		- uses stat to obtain and prints file properties
 		- some members are just members...
 */
 
