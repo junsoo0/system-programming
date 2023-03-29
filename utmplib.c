@@ -16,9 +16,9 @@ static int cur_rec;						/* next to go */
 static int fd_utmp = -1;				/* read from */
 
 /* declare the following functions to be written below */
-int utmp_reload();
-int utmp_open();
+int utmp_open(char *filename);
 struct utmp* utmp_next();
+int utmp_reload();
 void utmp_close();
 
 /*
