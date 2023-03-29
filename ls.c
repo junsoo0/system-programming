@@ -127,7 +127,7 @@ void dostat(char *filename) {
 
 void show_file_info(char *filename, struct stat *info_p) {
 	/*
-	   display the info about 'filename'
+	   displays the info about 'filename'
 	   the info is stored in struct at info_p
 	*/
 	char *uid_to_name(), *ctime(), *gid_to_name(), *filemode();
