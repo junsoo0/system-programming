@@ -1,3 +1,5 @@
+// cp.c - uses read and write with tunable buffer size
+
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
