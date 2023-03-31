@@ -17,7 +17,7 @@
 #include <pwd.h>
 #include <grp.h>
 
-#define MAX_ELEMENTS 200
+#define MAX_ELEMENTS 300
 typedef enum sort_type {
 	NONE, DESC, ASC
 } sort_type;
@@ -27,6 +27,7 @@ typedef struct {
 	int fsize;
 } element;
 
+void count_total_block_size(char dirname[]);
 void do_ls(char dirname[], sort_type type);
 void dostat(char *filename);
 void show_file_info(char *filename, struct stat *info_p);
@@ -53,6 +54,7 @@ int main(int argc, char *argv[]) {
 				t = DESC;
 			else if((*argv)[1] == 's')
 				t = ASC;
+			}
 		}
 		else
 			file_list[file_cnt++] = *argv;
@@ -70,6 +72,33 @@ int main(int argc, char *argv[]) {
 	return 0;
 }
 
+void count_total_block_size(char dirname[]) {
+	DIR *dir_ptr;
+	struct dirent *direntp;
+	struct stat info;
+	char filename[MAX_ELEMENTS];
+	off_t total_size = 0;
+
+	if((dir_ptr = opendir(dirname)) == NULL) {
+		fprintf(stderr, "ls2: cannot open %s\n", dirname);
+		exit(1);
+	}
+
+	while((direntp = readdir(dir_ptr)) != NULL) {
+		if (strcmp(dirname, ".") == 0)
+			strcpy(filename, direntp->d_name);
+		else
+			sprintf(filename, "%s/%s", dirname, direntp->d_name);
+
+		stat(filename, &info);
+		if (info.st_size > 0)
+			total_size += ((info.st_size - 1) / 4096 + 1) * 4;
+	}
+
+	printf("total %ld\n", total_size);
+	closedir(dir_ptr);
+}
+
 void do_ls(char dirname[], sort_type t) {
 	/*
 	   list files in directory called dirname
@@ -78,43 +107,46 @@ void do_ls(char dirname[], sort_type t) {
 	struct dirent *direntp;		/* each entry */
 	element temp;
 	struct stat info;
-	char str[500];
-	if((dir_ptr = opendir(dirname)) == NULL)
+	char filename[MAX_ELEMENTS];
+
+	count_total_block_size(dirname);
+
+	if((dir_ptr = opendir(dirname)) == NULL) {
 		fprintf(stderr, "ls2: cannot open %s\n", dirname);
-	else {
-		if(t == NONE) {
-			while((direntp = readdir(dir_ptr)) != NULL) {
-				if (strcmp(dirname, ".") == 0)
-					dostat(direntp->d_name);
-				else {
-					sprintf(str, "%s/%s", dirname, direntp->d_name);
-					dostat(str);
-				}
-			}
-		}
-		else if(t == DESC || t == ASC) {
-			while((direntp = readdir(dir_ptr)) != NULL) {
-				temp.filename = direntp->d_name;
-				if (strcmp(dirname, ".") == 0)
-					stat(temp.filename, &info);
-				else {
-					sprintf(str, "%s/%s", dirname, direntp->d_name);
-					stat(str, &info);
-				}
-				temp.fsize = info.st_size;
-				push(temp, t);
-			}
-			while(sz > 0) {
-				temp = pop(t);
-				if (strcmp(dirname, ".") == 0)
-					dostat(temp.filename);
-				else {
-					sprintf(str, "%s/%s", dirname, temp.filename);
-					dostat(str);
-				}
-			}
+		exit(1);
+	}
+
+	if(t == NONE) {
+		while((direntp = readdir(dir_ptr)) != NULL) {
+			if (strcmp(dirname, ".") == 0)
+				strcpy(filename, direntp->d_name);
+			else
+				sprintf(filename, "%s/%s", dirname, direntp->d_name);
+			dostat(filename);
 		}
 	}
+	else if(t == DESC || t == ASC) {
+		while((direntp = readdir(dir_ptr)) != NULL) {
+			temp.filename = direntp->d_name;
+			if (strcmp(dirname, ".") == 0)
+				strcpy(filename, temp.filename);
+			else
+				sprintf(filename, "%s/%s", dirname, direntp->d_name);
+			stat(filename, &info);
+			temp.fsize = info.st_size;
+			push(temp, t);
+		}
+
+		while(sz > 0) {
+			temp = pop(t);
+			if (strcmp(dirname, ".") == 0)
+				strcpy(filename, temp.filename);
+			else
+				sprintf(filename, "%s/%s", dirname, temp.filename);
+			dostat(filename);
+		}
+	}
+	closedir(dir_ptr);
 }
 
 void dostat(char *filename) {
