@@ -5,7 +5,8 @@
 		- note: uses stat and pwd.h and grp.h
 		- options:
 			-S: sort by file size, largest first 
-			-s: sort by file size, smallest first
+			-r: reverse order while sorting
+				ex) -Sr: sort by file size, smallest first
 */
 
 #include <stdio.h>
@@ -50,10 +51,11 @@ int main(int argc, char *argv[]) {
 	while(--argc) {
 		argv++;
 		if((*argv)[0] == '-') {
-			if((*argv)[1] == 'S')
-				t = DESC;
-			else if((*argv)[1] == 's')
-				t = ASC;
+			for (i = 1; i < strlen(*argv); i++) {
+				if ((*argv)[i] == 'S')
+					t = DESC;
+				if ((*argv)[i] == 'r' && t == DESC)
+					t = ASC;
 			}
 		}
 		else
